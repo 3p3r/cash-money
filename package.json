@@ -1,0 +1,48 @@
+{
+  "name": "cash-money",
+  "version": "1.0.0",
+  "description": "'cash-money' hooks up cash, vorpal, and memfs together as a virtual-shell framework for browsers and node.",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3p3r/cash-money.git"
+  },
+  "keywords": [
+    "cash",
+    "vorpal",
+    "memfs",
+    "inquirer",
+    "shell"
+  ],
+  "author": "Sepehr Laal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/3p3r/cash-money/issues"
+  },
+  "homepage": "https://github.com/3p3r/cash-money#readme",
+  "devDependencies": {
+    "@babel/preset-env": "^7.18.2",
+    "assert": "^2.0.0",
+    "babel-loader": "^8.2.5",
+    "buffer": "^6.0.3",
+    "cash": "^0.8.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "constants-browserify": "^1.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "memfs": "^3.4.3",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "readline-browserify": "^0.0.4",
+    "stream-browserify": "^3.0.0",
+    "tty-browserify": "^0.0.1",
+    "url": "^0.11.0",
+    "util": "^0.12.4",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0"
+  }
+}
