@@ -14,6 +14,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyPlugin({
       patterns: [
+        { from: "README.md", to: "README.md" },
         {
           from: "package.json",
           to: "package.json",
