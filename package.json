@@ -1,7 +1,7 @@
 {
   "name": "cash-money",
   "version": "1.0.0",
-  "description": "'cash-money' hooks up cash, vorpal, and memfs together as a virtual-shell framework for browsers and node.",
+  "description": "'cash-money' hooks up cash and memfs together as a virtual-shell framework for browsers and node.",
   "main": "index.js",
   "scripts": {
     "postinstall": "patch-package",
