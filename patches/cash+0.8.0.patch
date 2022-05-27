@@ -1,0 +1,67 @@
+diff --git a/node_modules/cash/dist/index.js b/node_modules/cash/dist/index.js
+index d73d537..8b11dd5 100755
+--- a/node_modules/cash/dist/index.js
++++ b/node_modules/cash/dist/index.js
+@@ -1,6 +1,7 @@
+ 'use strict';
+ 
+ var os = require('os');
++var assert = require('assert');
+ var Vorpal = require('vorpal');
+ 
+ var commands = require('./../commands.json');
+@@ -11,6 +12,9 @@ var path = require('path');
+ var fs = require('fs');
+ 
+ var cmds = undefined;
++var loaded = false;
++var helps = new Map();
++var providers = new Map();
+ 
+ var app = {
+ 
+@@ -25,6 +29,7 @@ var app = {
+   _fatal: false,
+ 
+   export: function _export(str, cbk) {
++    this.load();
+     // Is this a tagged template literal?
+     var tmpl = Array.isArray(str) && Array.isArray(str.raw);
+     cbk = tmpl && cbk || function () {};
+@@ -61,6 +66,8 @@ var app = {
+     return String(out).replace(/\n$/, '');
+   },
+   load: function load() {
++    if (loaded) return;
++    loaded = true;
+     var self = this;
+     self.vorpal.api = {};
+     this.commands.forEach(function (cmd) {
+@@ -69,10 +76,10 @@ var app = {
+       }
+       try {
+         (function () {
+-          var mod = require('./commands/' + cmd + '.js');
++          var mod = providers.has(cmd) ? providers.get(cmd) : require('./commands/' + cmd + '.js');
+           var help = undefined;
+           try {
+-            help = require('./help/' + cmd + '.js');
++            help = helps.has(cmd) ? helps.get(cmd) : require('./help/' + cmd + '.js');
+             help = String(help).replace(/^\n|\n$/g, '');
+           } catch (e) {
+             // .. whatever
+@@ -222,6 +229,12 @@ cmds = {
+   }
+ };
+ 
+-app.load();
+-
++app.export.use = function use(command, provider, help) {
++  assert.ok(!loaded);
++  assert.ok(_.isString(command));
++  assert.ok(_.isFunction(provider));
++  assert.ok(_.isString(help));
++  providers.set(command, provider);
++  helps.set(command, help);
++}
+ module.exports = app.export;
