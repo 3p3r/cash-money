@@ -1,0 +1,42 @@
+diff --git a/node_modules/rx-lite/rx.lite.js b/node_modules/rx-lite/rx.lite.js
+index c06f934..be36b95 100644
+--- a/node_modules/rx-lite/rx.lite.js
++++ b/node_modules/rx-lite/rx.lite.js
+@@ -2727,13 +2727,6 @@ var FlatMapObservable = (function(__super__){
+     return combineLatest.apply(this, args);
+   };
+ 
+-  function falseFactory() { return false; }
+-  function argumentsToArray() {
+-    var len = arguments.length, args = new Array(len);
+-    for(var i = 0; i < len; i++) { args[i] = arguments[i]; }
+-    return args;
+-  }
+-
+   /**
+    * Merges the specified observable sequences into one observable sequence by using the selector function whenever any of the observable sequences or Promises produces an element.
+    *
+@@ -3382,8 +3375,6 @@ var FlatMapObservable = (function(__super__){
+     return new TakeUntilObservable(this, other);
+   };
+ 
+-  function falseFactory() { return false; }
+-
+   /**
+    * Merges the specified observable sequences into one observable sequence by using the selector function only when the (first) source observable sequence produces an element.
+    * @returns {Observable} An observable sequence containing the result of combining elements of the sources using the specified result selector function.
+@@ -3430,14 +3421,6 @@ var FlatMapObservable = (function(__super__){
+     }, this);
+   };
+ 
+-  function falseFactory() { return false; }
+-  function emptyArrayFactory() { return []; }
+-  function argumentsToArray() {
+-    var len = arguments.length, args = new Array(len);
+-    for(var i = 0; i < len; i++) { args[i] = arguments[i]; }
+-    return args;
+-  }
+-
+   /**
+    * Merges the specified observable sequences into one observable sequence by using the selector function whenever all of the observable sequences or an array have produced an element at a corresponding index.
+    * The last element in the arguments must be a function to invoke for each series of elements at corresponding indexes in the args.

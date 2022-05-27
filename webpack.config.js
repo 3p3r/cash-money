@@ -1,11 +1,11 @@
-const path = require('path');
-const CopyPlugin = require('copy-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-  mode: 'production',
-  devtool: 'source-map',
-  entry: './index.js',
+  mode: process.env.CI ? "production" : "development",
+  devtool: `${process.env.CI ? "" : "inline-"}source-map`,
+  entry: "./index.js",
   performance: {
     maxAssetSize: 1e9,
     maxEntrypointSize: 1e9,
@@ -15,10 +15,10 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: 'package.json',
-          to: 'package.json',
+          from: "package.json",
+          to: "package.json",
           transform(content) {
-            const packageJson = JSON.parse(content.toString('utf8'));
+            const packageJson = JSON.parse(content.toString("utf8"));
             delete packageJson.scripts;
             delete packageJson.devDependencies;
             return Buffer.from(JSON.stringify(packageJson, null, 2));
@@ -28,9 +28,16 @@ module.exports = {
     }),
   ],
   output: {
-    libraryTarget: 'umd',
-    filename: 'index.js',
-    path: path.resolve(process.cwd(), 'dist'),
+    library: {
+      commonjs: "cash-money",
+      amd: "cash-money",
+      root: "CASH_MONEY",
+    },
+    libraryTarget: "umd",
+    umdNamedDefine: true,
+    globalObject: `(typeof self !== 'undefined' ? self : this)`,
+    filename: "index.js",
+    path: path.resolve(process.cwd(), "dist"),
   },
   module: {
     rules: [
@@ -38,9 +45,9 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: "babel-loader",
           options: {
-            presets: [['@babel/preset-env', { targets: 'last 2 Chrome versions' }]],
+            presets: [["@babel/preset-env", { targets: "last 2 Chrome versions" }]],
           },
         },
       },
@@ -48,19 +55,19 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      os: require.resolve('os-browserify'),
-      fs: require.resolve('memfs'),
-      tty: require.resolve('tty-browserify'),
-      url: require.resolve('url'),
-      util: require.resolve('util'),
-      path: require.resolve('path-browserify'),
-      assert: require.resolve('assert'),
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer'),
-      process: require.resolve('process'),
-      constants: require.resolve('constants-browserify'),
-      readline: require.resolve('readline-browserify'),
+      os: require.resolve("./src/os"),
+      fs: require.resolve("memfs"),
+      tty: require.resolve("tty-browserify"),
+      url: require.resolve("url"),
+      util: require.resolve("util"),
+      path: require.resolve("path-browserify"),
+      assert: require.resolve("assert"),
+      stream: require.resolve("stream-browserify"),
+      buffer: require.resolve("buffer"),
+      constants: require.resolve("constants-browserify"),
+      readline: require.resolve("readline-browserify"),
       child_process: false,
+      process: false,
     },
   },
   ignoreWarnings: [

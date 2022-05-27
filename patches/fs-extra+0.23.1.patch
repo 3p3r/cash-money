@@ -1,0 +1,13 @@
+diff --git a/node_modules/fs-extra/lib/copy-sync/copy-file-sync.js b/node_modules/fs-extra/lib/copy-sync/copy-file-sync.js
+index 2dc31ef..2b39dc9 100644
+--- a/node_modules/fs-extra/lib/copy-sync/copy-file-sync.js
++++ b/node_modules/fs-extra/lib/copy-sync/copy-file-sync.js
+@@ -1,7 +1,7 @@
+ var fs = require('graceful-fs')
+ 
+ var BUF_LENGTH = 64 * 1024
+-var _buff = new Buffer(BUF_LENGTH)
++var _buff = Buffer.alloc(BUF_LENGTH)
+ 
+ function copyFileSync (srcFile, destFile, options) {
+   var clobber = options.clobber

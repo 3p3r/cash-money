@@ -1,5 +1,5 @@
 diff --git a/node_modules/cash/dist/index.js b/node_modules/cash/dist/index.js
-index d73d537..8b11dd5 100755
+index d73d537..90a176d 100755
 --- a/node_modules/cash/dist/index.js
 +++ b/node_modules/cash/dist/index.js
 @@ -1,6 +1,7 @@
@@ -24,20 +24,23 @@ index d73d537..8b11dd5 100755
    _fatal: false,
  
    export: function _export(str, cbk) {
-+    this.load();
++    app.load();
      // Is this a tagged template literal?
      var tmpl = Array.isArray(str) && Array.isArray(str.raw);
      cbk = tmpl && cbk || function () {};
-@@ -61,6 +66,8 @@ var app = {
+@@ -61,6 +66,11 @@ var app = {
      return String(out).replace(/\n$/, '');
    },
    load: function load() {
 +    if (loaded) return;
 +    loaded = true;
++    process.chdir('/');
++    this.importedCommands = [];
++    fs.mkdirSync(os.tmpdir(), { recursive: true });
      var self = this;
      self.vorpal.api = {};
      this.commands.forEach(function (cmd) {
-@@ -69,10 +76,10 @@ var app = {
+@@ -69,10 +79,10 @@ var app = {
        }
        try {
          (function () {
@@ -50,7 +53,7 @@ index d73d537..8b11dd5 100755
              help = String(help).replace(/^\n|\n$/g, '');
            } catch (e) {
              // .. whatever
-@@ -222,6 +229,12 @@ cmds = {
+@@ -222,6 +232,12 @@ cmds = {
    }
  };
  
@@ -65,3 +68,4 @@ index d73d537..8b11dd5 100755
 +  helps.set(command, help);
 +}
  module.exports = app.export;
+\ No newline at end of file
