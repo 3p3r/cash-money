@@ -9,8 +9,7 @@ module.exports = {
   performance: {
     maxAssetSize: 1e9,
     maxEntrypointSize: 1e9,
-  }
-  ,
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new CopyPlugin({
@@ -64,4 +63,11 @@ module.exports = {
       child_process: false,
     },
   },
+  ignoreWarnings: [
+    {
+      // AFAIK this is never hit in Cash
+      module: /vorpal\/dist\/vorpal\.js$/,
+      message: /request of a dependency is an expression/,
+    },
+  ],
 };
