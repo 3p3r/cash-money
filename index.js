@@ -1,3 +1,2 @@
-export * from 'cash';
-import * as cash from 'cash';
-export default cash;
+export * as cash from 'cash';
+export * as memfs from 'memfs';
