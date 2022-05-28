@@ -1,6 +1,6 @@
 {
   "name": "react-ode-cash-money",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "'cash-money' is a virtual busybox-like framework in pure javascript.",
   "main": "index.js",
   "scripts": {
