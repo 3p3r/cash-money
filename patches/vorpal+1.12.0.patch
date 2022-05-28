@@ -1,0 +1,54 @@
+diff --git a/node_modules/vorpal/dist/vorpal.js b/node_modules/vorpal/dist/vorpal.js
+index 40f4a8d..8238525 100755
+--- a/node_modules/vorpal/dist/vorpal.js
++++ b/node_modules/vorpal/dist/vorpal.js
+@@ -700,7 +700,7 @@ vorpal.exec = function (cmd, args, cb) {
+  * @api public
+  */
+ 
+-vorpal.execSync = function (cmd, options) {
++vorpal.execSync = async function (cmd, options) {
+   var self = this;
+   var ssn = self.session;
+   options = options || {};
+@@ -716,7 +716,7 @@ vorpal.execSync = function (cmd, options) {
+     options: options
+   };
+ 
+-  return self._execQueueItem(command);
++  return await self._execQueueItem(command);
+ };
+ 
+ /**
+@@ -744,11 +744,11 @@ vorpal._queueHandler = function () {
+  * @api private
+  */
+ 
+-vorpal._execQueueItem = function (cmd) {
++vorpal._execQueueItem = async function (cmd) {
+   var self = this;
+   self._command = cmd;
+   if (cmd.session.isLocal() && !cmd.session.client) {
+-    return this._exec(cmd);
++    return await this._exec(cmd);
+   }
+   self._send('vantage-command-upstream', 'upstream', {
+     command: cmd.command,
+@@ -766,7 +766,7 @@ vorpal._execQueueItem = function (cmd) {
+  * @api private
+  */
+ 
+-vorpal._exec = function (item) {
++vorpal._exec = async function (item) {
+   var self = this;
+   item = item || {};
+   item.command = item.command || '';
+@@ -923,7 +923,7 @@ vorpal._exec = function (item) {
+       var response;
+       var error;
+       try {
+-        response = item.fn.call(new CommandInstance({
++        response = await item.fn.call(new CommandInstance({
+           downstream: undefined,
+           commandWrapper: item,
+           commandObject: item.commandObject,

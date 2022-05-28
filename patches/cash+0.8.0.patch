@@ -1,5 +1,5 @@
 diff --git a/node_modules/cash/dist/index.js b/node_modules/cash/dist/index.js
-index d73d537..90a176d 100755
+index d73d537..d5f59cc 100755
 --- a/node_modules/cash/dist/index.js
 +++ b/node_modules/cash/dist/index.js
 @@ -1,6 +1,7 @@
@@ -20,15 +20,31 @@ index d73d537..90a176d 100755
  
  var app = {
  
-@@ -25,6 +29,7 @@ var app = {
+@@ -24,10 +28,11 @@ var app = {
+ 
    _fatal: false,
  
-   export: function _export(str, cbk) {
+-  export: function _export(str, cbk) {
++  export: async function _export(str, cbk) {
 +    app.load();
      // Is this a tagged template literal?
      var tmpl = Array.isArray(str) && Array.isArray(str.raw);
-     cbk = tmpl && cbk || function () {};
-@@ -61,6 +66,11 @@ var app = {
+-    cbk = tmpl && cbk || function () {};
++    cbk = tmpl && cbk || function () { };
+     var options = {
+       fatal: app._fatal || false
+     };
+@@ -54,13 +59,18 @@ var app = {
+     } else {
+       commands = [str];
+     }
+-    commands.forEach(function (command) {
+-      app.vorpal.execSync(command, options);
+-    });
++    for (let command of commands) {
++      await app.vorpal.execSync(command, options);
++    }
+     unhook();
      return String(out).replace(/\n$/, '');
    },
    load: function load() {
@@ -53,19 +69,65 @@ index d73d537..90a176d 100755
              help = String(help).replace(/^\n|\n$/g, '');
            } catch (e) {
              // .. whatever
-@@ -222,6 +232,12 @@ cmds = {
+@@ -114,7 +124,7 @@ var app = {
+     var _loop = function _loop(cmd) {
+       if (app.vorpal.api.hasOwnProperty(cmd)) {
+         app.export[cmd] = function (args, options, callback) {
+-          callback = callback || function () {};
++          callback = callback || function () { };
+           options = options || {};
+           options.vorpal = app.vorpal;
+           return interfacer.call(this, {
+@@ -222,6 +232,51 @@ cmds = {
    }
  };
  
 -app.load();
--
-+app.export.use = function use(command, provider, help) {
++const preparser = require('cash/dist/preparser');
++
++const _makeProvider = ({ exec, setup, command }) => (function (vorpal) {
++  class Command {
++    static async exec(args, options, callback) {
++      try {
++        const ret = await exec(options);
++        callback(ret);
++      } catch (err) {
++        this.log(`command failed: "${err.message}" with args: "${JSON.stringify(args)}"`);
++        callback(1);
++      }
++    }
++  }
++  if (vorpal === undefined) {
++    return Command;
++  }
++  vorpal.api[command] = Command;
++  setup({
++    vorpal,
++    preparser,
++    interfacer: function (args, callback) {
++      return interfacer.call(this, {
++        options: args.options,
++        command: Command,
++        args, callback,
++        async: true,
++      });
++    },
++  });
++});
++
++const _use = function ({ command, provider, help }) {
 +  assert.ok(!loaded);
-+  assert.ok(_.isString(command));
-+  assert.ok(_.isFunction(provider));
-+  assert.ok(_.isString(help));
++  app.commands.push(command);
 +  providers.set(command, provider);
 +  helps.set(command, help);
-+}
++};
++
++app.export.use = function use({ name, help, exec, setup }) {
++  _use({
++    help,
++    command: name,
++    provider: _makeProvider({ exec, setup, command: name }),
++  });
++};
+ 
  module.exports = app.export;
-\ No newline at end of file
