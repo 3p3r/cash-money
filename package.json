@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "patch-package",
+    "build": "webpack",
+    "test": "exit 0",
     "verify": "google-closure-compiler --js=dist/index.js --warning_level=QUIET",
-    "build": "webpack"
+    "lint": "eslint dist/index.js",
+    "prepublishOnly": "CI=true npm-run-all build test verify lint"
   },
   "repository": {
     "type": "git",
@@ -34,8 +37,11 @@
     "clean-webpack-plugin": "^4.0.0",
     "constants-browserify": "^1.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "eslint": "^8.16.0",
+    "eslint-plugin-es": "^4.1.0",
     "google-closure-compiler": "^20220502.0.0",
     "memfs": "^3.4.3",
+    "npm-run-all": "^4.1.5",
     "os-browserify": "^0.3.0",
     "patch-package": "^6.4.7",
     "path-browserify": "^1.0.1",
