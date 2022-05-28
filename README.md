@@ -15,11 +15,11 @@ npm i react-ode-cash-money
 sample:
 
 ```JS
-const { cash, memfs } = require("react-ode-cash-money");
-
+const { cash, fs } = require("react-ode-cash-money");
+// this all happens in-memory!
 (async () => {
   console.log(await cash("echo 'hello world'"));
-  memfs.writeFileSync("sample.txt", "hello file content", "utf8");
+  fs.writeFileSync("sample.txt", "hello file content", "utf8");
   await cash("touch random.log");
   console.log(await cash("cat sample.txt"));
   console.log(await cash("ls -lah"));
@@ -45,16 +45,16 @@ drwxrwxrwx 1 1000 1000  0 May 27 13:22 tmp
 
 a single `use` api is exposed where you can define "programs" for the shell. `exec()` is program's entrypoint and `setup()` is like its `getopts`.
 
-"cash-money" modifies "cash" to accept async `exec()`s but you still need to make sure `exec()`s are executed serially and asynchronously.
+"cash-money" modifies "cash" to accept async `exec()`s but you still need to make sure `exec()`s are executed serially asynchronously.
 
-meaning that you cannot call cash commands in the middle of each other. there is no threading or process.
+meaning that you cannot call cash commands in the middle of each other. there is no threading or process management.
 
-do a waterfall `await cash(<thing 1>); await cash(<thing 2>);` and you are good.
+do a waterfall `await cash(<thing 1>); await cash(<thing 2>);` and you are good with no race conditions.
 
 ```JS
-const { cash } = require("react-ode-cash-money");
+const { console: logger, cash, use } = require("react-ode-cash-money");
 // this works if you call before 1st execution
-cash.use({
+use({
   // program's binary name
   name: "sample",
   // help when executed as "help <command>"
@@ -63,12 +63,12 @@ cash.use({
   exec: async function (argv) {
     // application logic goes here
     if (argv.version) {
-      console.log("Sample 1.0.0");
+      logger.log("Sample 1.0.0"); // or import console from cash-money
       return 0;
     }
   },
   // program's command line parser setup
-  setup: function ({ vorpal, interfacer, preparser }) {
+  setup: function (vorpal, interfacer, preparser) {
     vorpal
       .command("sample")
       .parse(preparser)

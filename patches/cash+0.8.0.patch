@@ -1,5 +1,5 @@
 diff --git a/node_modules/cash/dist/index.js b/node_modules/cash/dist/index.js
-index d73d537..d5f59cc 100755
+index d73d537..3b47911 100755
 --- a/node_modules/cash/dist/index.js
 +++ b/node_modules/cash/dist/index.js
 @@ -1,6 +1,7 @@
@@ -92,7 +92,7 @@ index d73d537..d5f59cc 100755
 +        const ret = await exec(options);
 +        callback(ret);
 +      } catch (err) {
-+        this.log(`command failed: "${err.message}" with args: "${JSON.stringify(args)}"`);
++        this.log(`command failed: "${err.message}" with args: ${JSON.stringify(args)}`);
 +        callback(1);
 +      }
 +    }
@@ -101,10 +101,10 @@ index d73d537..d5f59cc 100755
 +    return Command;
 +  }
 +  vorpal.api[command] = Command;
-+  setup({
++  setup(
 +    vorpal,
 +    preparser,
-+    interfacer: function (args, callback) {
++    function (args, callback) {
 +      return interfacer.call(this, {
 +        options: args.options,
 +        command: Command,
@@ -112,7 +112,7 @@ index d73d537..d5f59cc 100755
 +        async: true,
 +      });
 +    },
-+  });
++  );
 +});
 +
 +const _use = function ({ command, provider, help }) {
@@ -131,3 +131,18 @@ index d73d537..d5f59cc 100755
 +};
  
  module.exports = app.export;
+diff --git a/node_modules/cash/dist/util/interfacer.js b/node_modules/cash/dist/util/interfacer.js
+index 4bf2ddc..265da79 100755
+--- a/node_modules/cash/dist/util/interfacer.js
++++ b/node_modules/cash/dist/util/interfacer.js
+@@ -26,8 +26,8 @@ module.exports = function (opt) {
+     log: function log(out) {
+       stdout += out + '\n';
+       if (opt.silent !== true) {
+-        // process.stdout.write(out) // to do - handle newline problem.
+-        self.log(out);
++        // process.stdout.write(out);
++        console.log(out);
+       }
+     }
+   };

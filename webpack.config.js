@@ -6,7 +6,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   mode: process.env.CI ? "production" : "development",
   devtool: `${process.env.CI ? "" : "inline-"}source-map`,
-  entry: "./index.js",
+  entry: "./index.ts",
   performance: {
     maxAssetSize: 1e9,
     maxEntrypointSize: 1e9,
@@ -23,6 +23,7 @@ module.exports = {
     new ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
       process: require.resolve("./src/process"),
+      console: require.resolve("./src/console"),
     }),
     new CopyPlugin({
       patterns: [
@@ -55,14 +56,17 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|ts)$/,
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [["@babel/preset-env", { targets: "last 2 Chrome versions" }]],
+        use: [
+          {
+            loader: "babel-loader",
+            options: {
+              presets: [["@babel/preset-env"]],
+            },
           },
-        },
+          "ts-loader",
+        ],
       },
     ],
   },
@@ -83,6 +87,7 @@ module.exports = {
     alias: {
       os: require.resolve("./src/os"),
       process: require.resolve("./src/process"),
+      console: require.resolve("./src/console"),
     },
   },
   ignoreWarnings: [

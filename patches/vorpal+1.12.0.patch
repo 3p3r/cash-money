@@ -1,3 +1,24 @@
+diff --git a/node_modules/vorpal/dist/ui.js b/node_modules/vorpal/dist/ui.js
+index f9e254a..d960ceb 100755
+--- a/node_modules/vorpal/dist/ui.js
++++ b/node_modules/vorpal/dist/ui.js
+@@ -441,14 +441,14 @@ var UI = function (_EventEmitter) {
+       args = util.fixArgsForApply(args);
+       if (this.midPrompt()) {
+         var data = this.pause();
+-        console.log.apply(console.log, args);
++        console.log(...args);
+         if (typeof data !== 'undefined' && data !== false) {
+           this.resume(data);
+         } else {
+           console.log('Log got back \'false\' as data. This shouldn\'t happen.', data);
+         }
+       } else {
+-        console.log.apply(console.log, args);
++        console.log(...args);
+       }
+       return this;
+     }
 diff --git a/node_modules/vorpal/dist/vorpal.js b/node_modules/vorpal/dist/vorpal.js
 index 40f4a8d..8238525 100755
 --- a/node_modules/vorpal/dist/vorpal.js
