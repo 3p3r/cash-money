@@ -1,5 +1,6 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const { ProvidePlugin, DefinePlugin, EnvironmentPlugin } = require("webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
@@ -12,6 +13,17 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new DefinePlugin({
+      ["process.env"]: `(${JSON.stringify({
+        USER: "root",
+        HOME: "/root",
+        TEMP: "/tmp",
+      })})`,
+    }),
+    new ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+      process: require.resolve("./src/process"),
+    }),
     new CopyPlugin({
       patterns: [
         { from: "README.md", to: "README.md" },
@@ -56,7 +68,6 @@ module.exports = {
   },
   resolve: {
     fallback: {
-      os: require.resolve("./src/os"),
       fs: require.resolve("memfs"),
       tty: require.resolve("tty-browserify"),
       url: require.resolve("url"),
@@ -68,7 +79,10 @@ module.exports = {
       constants: require.resolve("constants-browserify"),
       readline: require.resolve("readline-browserify"),
       child_process: false,
-      process: false,
+    },
+    alias: {
+      os: require.resolve("./src/os"),
+      process: require.resolve("./src/process"),
     },
   },
   ignoreWarnings: [

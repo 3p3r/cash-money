@@ -52,9 +52,9 @@ meaning that you cannot call cash commands in the middle of each other. there is
 do a waterfall `await cash(<thing 1>); await cash(<thing 2>);` and you are good.
 
 ```JS
-const { use } = require("react-ode-cash-money");
+const { cash } = require("react-ode-cash-money");
 // this works if you call before 1st execution
-use({
+cash.use({
   // program's binary name
   name: "sample",
   // help when executed as "help <command>"
